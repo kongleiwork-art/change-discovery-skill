@@ -21,7 +21,7 @@ Decide the change size yourself; never ask the user to classify it. Before the u
 
 For a small change, state the classification, reason, and model-tier recommendation, then continue with the current selection by default to avoid an extra confirmation round. Say explicitly that the work is continuing because the change is small. Respect a user's standing request to pause even for small changes.
 
-For a medium or major change, stop immediately after classification and the model-tier recommendation. Ask whether the user wants to continue with the current model/reasoning selection or adjust it. Do not challenge the request, research GitHub, interview, write requirements, compare options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
+For a medium or major change, stop immediately after classification and the model-tier recommendation. Give one direct next action: ask the user to reply **continue** to keep the current model/reasoning selection, or to adjust it first and then reply **continue**. Do not challenge the request, research GitHub, interview, write requirements, compare options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
 
 If later evidence upgrades a small change to medium or major, stop before further discovery or implementation, report the reclassification, recommend the new tier, and apply the model checkpoint. If scope is uncertain, use the higher provisional class until one material answer resolves it.
 
@@ -62,6 +62,25 @@ Never recommend low for a high-risk trigger merely because the code change appea
 Do not switch models, change reasoning settings, edit the host agent's configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
 
 If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work, end the response at the model checkpoint and wait for confirmation before continuing discovery.
+
+Make the checkpoint unambiguous for a non-technical user. State explicitly:
+
+- that the recommendation applies to the **model tier**, not yet to whether the requested change should be built;
+- whether a switch is necessary when the current selection is verifiable;
+- when it is not verifiable, that no switch is needed if the current selection already meets or exceeds the recommended tier;
+- the exact next action: reply **continue** to keep the current selection, or switch first and then reply **continue**.
+
+Never end with only “confirm or adjust,” and never make the user infer whether a product recommendation has already been made.
+
+Use a compact checkpoint equivalent to this, translated into the user's language:
+
+> Recommended model tier: Medium.
+>
+> This is only model-selection advice; I have not yet evaluated whether the requested change should be built.
+>
+> I cannot verify your current selection. If it is already medium or higher, no switch is needed.
+>
+> Reply **continue** to keep the current selection, or switch first and then reply **continue**.
 
 ## 2. Challenge the Request
 
@@ -178,7 +197,7 @@ Reveal sections progressively rather than emitting empty templates:
 
 1. **Classification** — small, medium, or major; reasons, consequences, confidence.
 2. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition.
-3. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, stop here until the user confirms the current selection or adjusts it.
+3. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, clarify that this is not yet the product recommendation, give the exact action, and stop until the user replies **continue**.
 4. **Assessment** — proceed, reduce scope, defer, or decline.
 5. **Question** — the single next material unknown, if any.
 6. **GitHub Findings** — evidence and lessons before solution comparison.

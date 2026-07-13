@@ -86,10 +86,13 @@ Add a community feature to my application.
 
 Expected behavior begins with classification and model-tier advice—not implementation. Small changes state that they will continue with the current selection. Medium and major changes stop at a model checkpoint before product discovery continues.
 
+At that checkpoint, the agent must say that it has **not yet decided whether the request should be built** and give one clear action: reply `continue` to keep the current model, or switch first and then reply `continue`.
+
 ## Safety and limitations
 
 - Model-tier recommendations are advisory; the skill never switches models or reasoning settings by itself.
 - The model checkpoint adds no extra confirmation round for small changes unless the user requests one.
+- A model-tier recommendation must not be presented as a recommendation to build or reject the requested change.
 - GitHub research requires the host to have public web or GitHub access.
 - The approval gate is an instruction-level guardrail, not an operating-system permission boundary.
 - Superpowers is optional. The agent must use equivalent engineering discipline when those skills are unavailable.
