@@ -1,6 +1,6 @@
 ---
 name: change-discovery
-description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; recommend an advisory low, medium, or high model/reasoning tier without switching models; challenge necessity; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then route approved work through relevant engineering-discipline skills.
+description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; recommend an advisory low, medium, or high model/reasoning tier without switching models; challenge necessity; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
 ---
 
 # Change Discovery
@@ -8,6 +8,12 @@ description: Classify and clarify proposed code changes before implementation, e
 ## Purpose
 
 Help a non-technical user decide what is worth building and turn an uncertain request into clear requirements and a safe engineering plan. Optimize for correct total effort and low rework, not for the fewest discovery tokens.
+
+## Host Compatibility
+
+Treat this workflow as host-independent. Use the current agent's native tools for project inspection, public research, questions, planning, and approval. Adapt tool and skill names instead of assuming a particular vendor, model family, filesystem layout, or interaction UI.
+
+Preserve the safety boundaries even when the host lacks a dedicated read-only, planning, or approval mode. State capability limitations instead of pretending that a tool, skill, model tier, or research action is available. Ignore host-specific metadata files that the current agent does not recognize.
 
 ## Hard Gate
 
@@ -49,7 +55,7 @@ Immediately after classification, recommend a model/reasoning tier. Treat the re
 
 Never recommend low for a high-risk trigger merely because the code change appears short. State the recommended tier, the reason, the expected speed or token trade-off, and the condition that would justify moving up or down a tier.
 
-Do not switch models, change reasoning settings, edit Codex configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
+Do not switch models, change reasoning settings, edit the host agent's configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
 
 ## 2. Challenge the Request
 
@@ -81,7 +87,7 @@ Use a bounded research pass by default: try no more than three focused query var
 - patterns worth adopting or avoiding;
 - maintenance activity, license, compatibility, dependencies, security concerns, and adoption cost.
 
-Do not rank by stars alone, copy code blindly, or add a dependency merely because an implementation exists. If no close analogue exists, report the queries and the absence of a useful match, then reason from first principles. If GitHub is unavailable, say so and ask whether to continue without research; never imply that research occurred.
+Do not rank by stars alone, copy code blindly, or add a dependency merely because an implementation exists. If no close analogue exists, report the queries and the absence of a useful match, then reason from first principles. If the host agent cannot access GitHub or the public web, say so and ask whether to continue without research; never imply that research occurred.
 
 Feed research discoveries back into the interview and requirements before proposing solutions.
 
@@ -132,7 +138,7 @@ End with an explicit approval request. Do not begin medium or major implementati
 
 ## 9. Apply Engineering Discipline After Approval
 
-Use relevant installed engineering skills after approval and announce each invocation. Route work as applicable:
+Use relevant engineering skills available in the host agent after approval and announce each invocation. For major changes, prefer the corresponding Superpowers skills when installed; otherwise use host-native skills or apply the equivalent discipline directly:
 
 - `using-git-worktrees` for isolated major work in a Git repository;
 - `systematic-debugging` before proposing a fix for a bug or unexplained failure;
@@ -142,7 +148,7 @@ Use relevant installed engineering skills after approval and announce each invoc
 - `requesting-code-review` for major changes or high-risk work;
 - `finishing-a-development-branch` when deciding how to integrate finished branch work.
 
-Invoke only skills actually available in the current session. Never claim to have invoked a missing skill. If one is unavailable, disclose that fact and either apply its core discipline directly when safe or ask the user before installing or materially changing the workflow.
+Treat these names as capability labels rather than mandatory dependencies. Do not install Superpowers or any other skill pack without permission. Invoke only skills actually available in the current session and never claim to have invoked a missing skill. If one is unavailable, disclose that fact and apply its core discipline directly when safe, or ask before installing or materially changing the workflow.
 
 ## Token Efficiency
 
