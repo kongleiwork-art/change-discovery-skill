@@ -24,7 +24,7 @@ It then recommends **proceed**, **reduce scope**, **defer**, or **decline**.
 ## Workflow
 
 1. Classify the change as small, medium, or major based on risk and blast radius—not line count alone.
-2. Recommend an advisory low, medium, or high model/reasoning tier without switching models automatically.
+2. Recommend an advisory low, medium, or high model/reasoning tier without switching models automatically. Small changes continue by default; medium and major changes pause until the user confirms the current selection or adjusts it.
 3. Challenge the necessity and expected product value of the request.
 4. Create a privacy-safe search brief.
 5. For medium and major changes, research similar GitHub work before comparing solutions.
@@ -84,11 +84,12 @@ Use change-discovery to evaluate this request before changing code:
 Add a community feature to my application.
 ```
 
-Expected behavior begins with classification, model-tier advice, product-value assessment, and the next material question—not implementation.
+Expected behavior begins with classification and model-tier advice—not implementation. Small changes state that they will continue with the current selection. Medium and major changes stop at a model checkpoint before product discovery continues.
 
 ## Safety and limitations
 
 - Model-tier recommendations are advisory; the skill never switches models or reasoning settings by itself.
+- The model checkpoint adds no extra confirmation round for small changes unless the user requests one.
 - GitHub research requires the host to have public web or GitHub access.
 - The approval gate is an instruction-level guardrail, not an operating-system permission boundary.
 - Superpowers is optional. The agent must use equivalent engineering discipline when those skills are unavailable.

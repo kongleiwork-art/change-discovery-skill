@@ -1,6 +1,6 @@
 ---
 name: change-discovery
-description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; recommend an advisory low, medium, or high model/reasoning tier without switching models; challenge necessity; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
+description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; recommend an advisory low, medium, or high model/reasoning tier without switching models; pause medium or major work for model confirmation; challenge necessity; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
 ---
 
 # Change Discovery
@@ -19,7 +19,11 @@ Preserve the safety boundaries even when the host lacks a dedicated read-only, p
 
 Decide the change size yourself; never ask the user to classify it. Before the user explicitly approves a medium or major change, restrict work to read-only project inspection, public research, questions, requirements, options, and an in-chat plan. Do not edit project files, write code, create implementation artifacts, install dependencies, commit, push, or make external write actions.
 
-For a small change, state the classification and reason, then follow the normal implementation workflow. If scope is uncertain, use the higher provisional class until one material answer resolves it.
+For a small change, state the classification, reason, and model-tier recommendation, then continue with the current selection by default to avoid an extra confirmation round. Say explicitly that the work is continuing because the change is small. Respect a user's standing request to pause even for small changes.
+
+For a medium or major change, stop immediately after classification and the model-tier recommendation. Ask whether the user wants to continue with the current model/reasoning selection or adjust it. Do not challenge the request, research GitHub, interview, write requirements, compare options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
+
+If later evidence upgrades a small change to medium or major, stop before further discovery or implementation, report the reclassification, recommend the new tier, and apply the model checkpoint. If scope is uncertain, use the higher provisional class until one material answer resolves it.
 
 ## 1. Classify the Change
 
@@ -56,6 +60,8 @@ Immediately after classification, recommend a model/reasoning tier. Treat the re
 Never recommend low for a high-risk trigger merely because the code change appears short. State the recommended tier, the reason, the expected speed or token trade-off, and the condition that would justify moving up or down a tier.
 
 Do not switch models, change reasoning settings, edit the host agent's configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
+
+If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work, end the response at the model checkpoint and wait for confirmation before continuing discovery.
 
 ## 2. Challenge the Request
 
@@ -172,10 +178,11 @@ Reveal sections progressively rather than emitting empty templates:
 
 1. **Classification** — small, medium, or major; reasons, consequences, confidence.
 2. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition.
-3. **Assessment** — proceed, reduce scope, defer, or decline.
-4. **Question** — the single next material unknown, if any.
-5. **GitHub Findings** — evidence and lessons before solution comparison.
-6. **Requirements Brief** — confirmed what and why.
-7. **Options** — approaches, trade-offs, and recommendation.
-8. **Plan** — decision-complete implementation sequence.
-9. **Approval** — explicit permission before medium or major code changes.
+3. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, stop here until the user confirms the current selection or adjusts it.
+4. **Assessment** — proceed, reduce scope, defer, or decline.
+5. **Question** — the single next material unknown, if any.
+6. **GitHub Findings** — evidence and lessons before solution comparison.
+7. **Requirements Brief** — confirmed what and why.
+8. **Options** — approaches, trade-offs, and recommendation.
+9. **Plan** — decision-complete implementation sequence.
+10. **Approval** — explicit permission before medium or major code changes.
