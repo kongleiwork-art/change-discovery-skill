@@ -1,4 +1,4 @@
 interface:
   display_name: "Change Discovery"
   short_description: "Classify, clarify, and recommend effort before code."
-  default_prompt: "Use $change-discovery to classify this change, recommend and confirm the model tier when required, and clarify it before implementation."
+  default_prompt: "Use $change-discovery to classify this change, assess its preliminary product value, recommend and confirm the model tier when required, and clarify it before implementation."

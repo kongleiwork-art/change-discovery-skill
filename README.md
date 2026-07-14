@@ -24,8 +24,8 @@ It then recommends **proceed**, **reduce scope**, **defer**, or **decline**.
 ## Workflow
 
 1. Classify the change as small, medium, or major based on risk and blast radius—not line count alone.
-2. Recommend an advisory low, medium, or high model/reasoning tier without switching models automatically. Small changes continue by default; medium and major changes pause until the user confirms the current selection or adjusts it.
-3. Challenge the necessity and expected product value of the request.
+2. Give a preliminary verdict on necessity and expected product value, identify missing evidence, and suggest at least one smaller or better direction.
+3. Recommend an advisory low, medium, or high model/reasoning tier without switching models automatically. Small changes continue by default; medium and major changes pause until the user confirms the current selection or adjusts it.
 4. Create a privacy-safe search brief.
 5. For medium and major changes, research similar GitHub work before comparing solutions.
 6. Ask one material question at a time so non-technical users can make informed decisions.
@@ -84,15 +84,15 @@ Use change-discovery to evaluate this request before changing code:
 Add a community feature to my application.
 ```
 
-Expected behavior begins with classification and model-tier advice—not implementation. Small changes state that they will continue with the current selection. Medium and major changes stop at a model checkpoint before product discovery continues.
+Expected behavior begins with classification, a preliminary product-value verdict, an improvement direction, and model-tier advice—not implementation. Small changes state that they will continue with the current selection. Medium and major changes stop at a model checkpoint before GitHub research and deeper discovery continue.
 
-At that checkpoint, the agent must say that it has **not yet decided whether the request should be built** and give one clear action: reply `continue` to keep the current model, or switch first and then reply `continue`.
+At that checkpoint, the agent must distinguish the preliminary product verdict from the model advice, say that deeper validation has not started, and give one clear action: reply `continue` to keep the current model, or switch first and then reply `continue`.
 
 ## Safety and limitations
 
 - Model-tier recommendations are advisory; the skill never switches models or reasoning settings by itself.
 - The model checkpoint adds no extra confirmation round for small changes unless the user requests one.
-- A model-tier recommendation must not be presented as a recommendation to build or reject the requested change.
+- A model-tier recommendation must be clearly separated from the preliminary recommendation to proceed, reduce scope, defer, or decline.
 - GitHub research requires the host to have public web or GitHub access.
 - The approval gate is an instruction-level guardrail, not an operating-system permission boundary.
 - Superpowers is optional. The agent must use equivalent engineering discipline when those skills are unavailable.

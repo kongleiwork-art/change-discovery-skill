@@ -1,6 +1,6 @@
 ---
 name: change-discovery
-description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; recommend an advisory low, medium, or high model/reasoning tier without switching models; pause medium or major work for model confirmation; challenge necessity; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
+description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; give a preliminary product-value assessment and improvement direction; recommend an advisory low, medium, or high model/reasoning tier without switching models; pause medium or major work for model confirmation before deeper discovery; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
 ---
 
 # Change Discovery
@@ -21,9 +21,9 @@ Decide the change size yourself; never ask the user to classify it. Before the u
 
 For a small change, state the classification, reason, and model-tier recommendation, then continue with the current selection by default to avoid an extra confirmation round. Say explicitly that the work is continuing because the change is small. Respect a user's standing request to pause even for small changes.
 
-For a medium or major change, stop immediately after classification and the model-tier recommendation. Give one direct next action: ask the user to reply **continue** to keep the current model/reasoning selection, or to adjust it first and then reply **continue**. Do not challenge the request, research GitHub, interview, write requirements, compare options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
+For a medium or major change, complete a preliminary product assessment before the model checkpoint, using only the project evidence already available from initial inspection. Then recommend the model tier and stop. Give one direct next action: ask the user to reply **continue** to keep the current model/reasoning selection, or to adjust it first and then reply **continue**. Do not research GitHub, conduct a deeper interview, write full requirements, compare implementation options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
 
-If later evidence upgrades a small change to medium or major, stop before further discovery or implementation, report the reclassification, recommend the new tier, and apply the model checkpoint. If scope is uncertain, use the higher provisional class until one material answer resolves it.
+If later evidence upgrades a small change to medium or major, stop before further discovery or implementation, report the reclassification, give or update the preliminary product assessment, recommend the new tier, and apply the model checkpoint. If scope is uncertain, use the higher provisional class until one material answer resolves it.
 
 ## 1. Classify the Change
 
@@ -49,9 +49,24 @@ Classify as **small** only when the change is local, reversible, preserves exter
 
 Translate technical risk into practical consequences. Say, for example, “older clients may stop signing in,” not only “backward-compatibility risk.”
 
-## Recommend a Model Tier
+## 2. Preliminary Product Assessment
 
-Immediately after classification, recommend a model/reasoning tier. Treat the recommendation as **advisory only** and revise it if later inspection or research changes the classification.
+Before the model checkpoint, give every medium or major request a concise product assessment based on current project evidence. For a small request, include a proportionate version without adding ceremony. State:
+
+- the problem, affected user, and intended outcome as understood;
+- evidence that the problem exists, or the assumption still needing validation;
+- the likely product and user value, plus the cost of doing nothing;
+- risks to user behavior, trust, accessibility, or the product's existing positioning;
+- the smallest viable option, including non-code or lower-risk alternatives;
+- at least one concrete improvement or reduced-scope direction.
+
+Recommend **proceed**, **reduce scope**, **defer**, or **decline**. Label this conclusion **preliminary** and say which evidence or GitHub research could change it. Do not treat the original request as automatically necessary, and do not turn the improvement direction into a full implementation-option comparison before research.
+
+After the model checkpoint is confirmed, deepen or revise this assessment using GitHub findings and material answers from the user.
+
+## 3. Recommend a Model Tier
+
+After classification and the preliminary product assessment, recommend a model/reasoning tier. Treat the recommendation as **advisory only** and revise it if later inspection or research changes the classification.
 
 - Recommend **low** for small, deterministic, local, easily reversible work with a narrow verification path. Suggest low or minimal reasoning when the selected model supports it.
 - Recommend **medium** for bounded feature work, refactoring, or debugging that contains several decisions but has limited blast radius and straightforward rollback. Suggest medium reasoning.
@@ -61,46 +76,35 @@ Never recommend low for a high-risk trigger merely because the code change appea
 
 Do not switch models, change reasoning settings, edit the host agent's configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
 
-If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work, end the response at the model checkpoint and wait for confirmation before continuing discovery.
+If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work, end the response at the model checkpoint and wait for confirmation before deeper discovery.
 
 Make the checkpoint unambiguous for a non-technical user. State explicitly:
 
-- that the recommendation applies to the **model tier**, not yet to whether the requested change should be built;
+- that the model-tier recommendation is separate from the preliminary product recommendation already given;
+- that GitHub research and deeper validation have not started yet;
 - whether a switch is necessary when the current selection is verifiable;
 - when it is not verifiable, that no switch is needed if the current selection already meets or exceeds the recommended tier;
 - the exact next action: reply **continue** to keep the current selection, or switch first and then reply **continue**.
 
-Never end with only “confirm or adjust,” and never make the user infer whether a product recommendation has already been made.
+Never end with only “confirm or adjust,” and never make the user infer which recommendation they received.
 
 Use a compact checkpoint equivalent to this, translated into the user's language:
 
 > Recommended model tier: Medium.
 >
-> This is only model-selection advice; I have not yet evaluated whether the requested change should be built.
+> The product recommendation above is preliminary; GitHub research and deeper validation have not started yet.
 >
 > I cannot verify your current selection. If it is already medium or higher, no switch is needed.
 >
 > Reply **continue** to keep the current selection, or switch first and then reply **continue**.
 
-## 2. Challenge the Request
-
-Before designing a solution, state:
-
-- the problem, affected user, and intended outcome as understood;
-- evidence that the problem exists, or the assumption still needing validation;
-- the cost of doing nothing;
-- the smallest viable option, including non-code or lower-risk alternatives;
-- expected value, risk, reversibility, and likely scope.
-
-Recommend **proceed**, **reduce scope**, **defer**, or **decline**. Do not treat the original request as automatically necessary.
-
-## 3. Establish a Search Brief
+## 4. Establish a Search Brief
 
 Learn only enough to search safely and accurately: the problem category, target user, observable outcome, relevant platform or stack, and important constraints. If one of these would materially change the search, ask one question before researching.
 
 Never include private code, repository names, secrets, customer data, or sensitive business details in a public query. Abstract the problem while preserving the technical constraints.
 
-## 4. Conduct GitHub Research
+## 5. Conduct GitHub Research
 
 Research GitHub before comparing implementation options for every medium or major change. Search relevant repositories, issues, discussions, design documents, examples, and official documentation. Prefer primary sources and open the most relevant results instead of relying on snippets.
 
@@ -116,7 +120,7 @@ Do not rank by stars alone, copy code blindly, or add a dependency merely becaus
 
 Feed research discoveries back into the interview and requirements before proposing solutions.
 
-## 5. Interview for Material Decisions
+## 6. Interview for Material Decisions
 
 Ask one focused question at a time. Ask only when the answer can change necessity, scope, user behavior, success criteria, design, rollout, or risk. Explain why the question matters in plain language and give a recommended default when useful.
 
@@ -131,7 +135,7 @@ Cover as applicable:
 
 Do not ask questions for ceremony or expect the user to resolve technical issues unaided. Translate trade-offs into user, cost, maintenance, and failure consequences. Stop when no unresolved answer would materially change the result; record reasonable defaults as explicit assumptions.
 
-## 6. Produce a Requirements Brief
+## 7. Produce a Requirements Brief
 
 Separate **what and why** from **how**. Present a concise, technology-agnostic requirements brief containing:
 
@@ -145,11 +149,11 @@ Separate **what and why** from **how**. Present a concise, technology-agnostic r
 
 Do not hide uncertainty inside vague wording. Resolve it, state a recommended assumption, or mark it as an explicit decision still requiring the user.
 
-## 7. Compare Solutions
+## 8. Compare Solutions
 
 Only after GitHub research and a stable requirements brief, compare two or three viable approaches, including the smallest viable option when appropriate. For each, explain user value, complexity, risk, reversibility, maintenance burden, compatibility, implementation effort, and likely token or rework cost. Recommend one option and explain why the rejected options are less suitable.
 
-## 8. Plan and Request Approval
+## 9. Plan and Request Approval
 
 Present a decision-complete implementation plan scaled to risk. Include:
 
@@ -161,7 +165,7 @@ Present a decision-complete implementation plan scaled to risk. Include:
 
 End with an explicit approval request. Do not begin medium or major implementation until the user approves the plan or clearly authorizes proceeding with a stated assumption. If the user changes scope, repeat classification and update downstream requirements and plans.
 
-## 9. Apply Engineering Discipline After Approval
+## 10. Apply Engineering Discipline After Approval
 
 Use relevant engineering skills available in the host agent after approval and announce each invocation. For major changes, prefer the corresponding Superpowers skills when installed; otherwise use host-native skills or apply the equivalent discipline directly:
 
@@ -196,9 +200,9 @@ Do not optimize for the shortest immediate response when that increases the risk
 Reveal sections progressively rather than emitting empty templates:
 
 1. **Classification** — small, medium, or major; reasons, consequences, confidence.
-2. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition.
-3. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, clarify that this is not yet the product recommendation, give the exact action, and stop until the user replies **continue**.
-4. **Assessment** — proceed, reduce scope, defer, or decline.
+2. **Preliminary Product Assessment** — necessity, likely user and product value, evidence gaps, risks, smallest alternative, improvement direction, and a preliminary proceed/reduce/defer/decline verdict.
+3. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition.
+4. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, distinguish the model advice from the preliminary product verdict, give the exact action, and stop until the user replies **continue**.
 5. **Question** — the single next material unknown, if any.
 6. **GitHub Findings** — evidence and lessons before solution comparison.
 7. **Requirements Brief** — confirmed what and why.
