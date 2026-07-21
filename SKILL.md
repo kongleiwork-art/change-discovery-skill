@@ -1,6 +1,10 @@
 ---
 name: change-discovery
-description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; give a preliminary product-value assessment and improvement direction; recommend an advisory low, medium, or high model/reasoning tier without switching models; pause medium or major work for model confirmation before deeper discovery; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
+description: Classify and clarify proposed code changes before implementation, especially when the user cannot judge scope or a request may affect architecture, user flows, data, APIs, dependencies, security, performance, deployment, or multiple components. Determine whether the change is small, medium, or major; give a preliminary product-value assessment and improvement direction; stop on decline or defer before deeper work; recommend an advisory low, medium, or high model/reasoning tier without switching models; pause medium or major proceed/reduce-scope work for model confirmation before deeper discovery; research similar GitHub work before comparing solutions; produce a requirements brief and approval-gated plan; then apply relevant engineering disciplines using capabilities available in the host agent.
+license: MIT
+metadata:
+  author: kongleiwork-art
+  version: "1.3"
 ---
 
 # Change Discovery
@@ -19,11 +23,27 @@ Preserve the safety boundaries even when the host lacks a dedicated read-only, p
 
 Decide the change size yourself; never ask the user to classify it. Before the user explicitly approves a medium or major change, restrict work to read-only project inspection, public research, questions, requirements, options, and an in-chat plan. Do not edit project files, write code, create implementation artifacts, install dependencies, commit, push, or make external write actions.
 
-For a small change, state the classification, reason, and model-tier recommendation, then continue with the current selection by default to avoid an extra confirmation round. Say explicitly that the work is continuing because the change is small. Respect a user's standing request to pause even for small changes.
+For a small change, state the classification, a proportionate product assessment, and the model-tier recommendation, then continue with the current selection by default to avoid an extra confirmation round. Say explicitly that the work is continuing because the change is small. Respect a user's standing request to pause even for small changes.
 
-For a medium or major change, complete a preliminary product assessment before the model checkpoint, using only the project evidence already available from initial inspection. Then recommend the model tier and stop. Give one direct next action: ask the user to reply **continue** to keep the current model/reasoning selection, or to adjust it first and then reply **continue**. Do not research GitHub, conduct a deeper interview, write full requirements, compare implementation options, plan, or implement until the user explicitly confirms. This model checkpoint is separate from the later approval of the implementation plan.
+For a medium or major change, complete a preliminary product assessment before any deeper discovery, using only the project evidence already available from initial inspection. Then apply the product-decision gate:
 
-If later evidence upgrades a small change to medium or major, stop before further discovery or implementation, report the reclassification, give or update the preliminary product assessment, recommend the new tier, and apply the model checkpoint. If scope is uncertain, use the higher provisional class until one material answer resolves it.
+- **decline** or **defer** — stop for a product decision. Do not recommend a model tier for deeper discovery, research GitHub, interview deeply, write full requirements, compare implementation options, plan, or implement until the user explicitly chooses to continue anyway or revises the request.
+- **reduce scope** — recommend the reduced or improved direction, recommend the model tier for that revised scope, and stop at the model checkpoint.
+- **proceed** — recommend the model tier for the assessed scope and stop at the model checkpoint.
+
+Give one direct next action. For the model checkpoint, ask the user to reply **continue** to keep the current model/reasoning selection, or to adjust it first and then reply **continue**. For a decline or defer stop, ask the user to reply **continue anyway** only if they still want discovery, or to revise/stop. This product or model checkpoint is separate from the later approval of the implementation plan.
+
+If later evidence upgrades a small change to medium or major, or changes the product verdict, stop before further discovery or implementation, report the reclassification or revised assessment, and re-enter the matching gate. If scope is uncertain, use the higher provisional class until one material answer resolves it.
+
+## First Response Budget
+
+For medium or major work, the pre-gate reply must stay compact and decision-oriented. Include only:
+
+1. **Classification** — size, 2–4 concrete reasons or consequences, confidence.
+2. **Preliminary Product Assessment** — short verdict with evidence gap, smallest alternative, and one improvement direction.
+3. **Next Gate** — either the product decision stop (`decline` / `defer`) or the model-tier recommendation plus model checkpoint (`proceed` / `reduce scope`).
+
+Do not start GitHub research, long interviews, requirements drafts, option matrices, or implementation plans before the relevant gate clears. Prefer roughly one short screen of text over an essay. Load [references/first-response.md](references/first-response.md) when an example shape helps.
 
 ## 1. Classify the Change
 
@@ -51,7 +71,7 @@ Translate technical risk into practical consequences. Say, for example, “older
 
 ## 2. Preliminary Product Assessment
 
-Before the model checkpoint, give every medium or major request a concise product assessment based on current project evidence. For a small request, include a proportionate version without adding ceremony. State:
+Before the product or model gate, give every medium or major request a concise product assessment based on current project evidence. For a small request, include a proportionate version without adding ceremony. State:
 
 - the problem, affected user, and intended outcome as understood;
 - evidence that the problem exists, or the assumption still needing validation;
@@ -60,13 +80,23 @@ Before the model checkpoint, give every medium or major request a concise produc
 - the smallest viable option, including non-code or lower-risk alternatives;
 - at least one concrete improvement or reduced-scope direction.
 
-Recommend **proceed**, **reduce scope**, **defer**, or **decline**. Label this conclusion **preliminary** and say which evidence or GitHub research could change it. Do not treat the original request as automatically necessary, and do not turn the improvement direction into a full implementation-option comparison before research.
+Recommend **proceed**, **reduce scope**, **defer**, or **decline**. Label this conclusion **preliminary** and say which evidence or GitHub research could change it.
 
-After the model checkpoint is confirmed, deepen or revise this assessment using GitHub findings and material answers from the user.
+Do not rubber-stamp the request. Prefer **reduce scope**, **defer**, or **decline** when evidence is weak, the user problem is unclear, the expected value is low relative to maintenance cost, or a non-code fix is enough. Choose **proceed** only when project evidence makes the user problem and likely value clear enough to justify deeper discovery. Do not turn the improvement direction into a full implementation-option comparison before research.
+
+### Product Decision Gate
+
+After the preliminary verdict:
+
+- If **decline** or **defer**, stop. Explain why in plain language, name the missing evidence or better timing, and offer the strongest smaller alternative if one exists. Do not open the model checkpoint unless the user explicitly chooses to continue discovery anyway.
+- If **reduce scope**, treat the reduced or improved direction as the working request for the rest of the workflow unless the user explicitly insists on the original scope.
+- If **proceed**, continue to the model-tier recommendation and model checkpoint.
+
+After a cleared gate, deepen or revise the assessment using GitHub findings and material answers from the user. If later evidence weakens the case, revise the verdict and re-enter the product decision gate before more discovery or any implementation.
 
 ## 3. Recommend a Model Tier
 
-After classification and the preliminary product assessment, recommend a model/reasoning tier. Treat the recommendation as **advisory only** and revise it if later inspection or research changes the classification.
+After classification and a preliminary product assessment that is **proceed** or **reduce scope**, recommend a model/reasoning tier. Treat the recommendation as **advisory only** and revise it if later inspection or research changes the classification. Skip this section when the current product verdict is **decline** or **defer**, unless the user explicitly asks to continue discovery anyway.
 
 - Recommend **low** for small, deterministic, local, easily reversible work with a narrow verification path. Suggest low or minimal reasoning when the selected model supports it.
 - Recommend **medium** for bounded feature work, refactoring, or debugging that contains several decisions but has limited blast radius and straightforward rollback. Suggest medium reasoning.
@@ -76,7 +106,7 @@ Never recommend low for a high-risk trigger merely because the code change appea
 
 Do not switch models, change reasoning settings, edit the host agent's configuration, or spawn a subagent solely to realize the recommendation. Respect the user's explicit model selection. Do not claim that a different model or tier was used unless the current environment verifies it. Keep model names out of the core workflow; when the user asks for a specific model, use current availability and official guidance rather than a hardcoded name.
 
-If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work, end the response at the model checkpoint and wait for confirmation before deeper discovery.
+If the environment cannot verify the current model or reasoning setting, say so instead of assuming it matches the recommendation. For medium or major work that passed the product decision gate, end the response at the model checkpoint and wait for confirmation before deeper discovery.
 
 Make the checkpoint unambiguous for a non-technical user. State explicitly:
 
@@ -104,9 +134,11 @@ Learn only enough to search safely and accurately: the problem category, target 
 
 Never include private code, repository names, secrets, customer data, or sensitive business details in a public query. Abstract the problem while preserving the technical constraints.
 
+When the working request came from a **reduce scope** verdict, search for the reduced or improved direction, not the abandoned larger request.
+
 ## 5. Conduct GitHub Research
 
-Research GitHub before comparing implementation options for every medium or major change. Search relevant repositories, issues, discussions, design documents, examples, and official documentation. Prefer primary sources and open the most relevant results instead of relying on snippets.
+Research GitHub before comparing implementation options for every medium or major change that has cleared the product and model gates. Search relevant repositories, issues, discussions, design documents, examples, and official documentation. Prefer primary sources and open the most relevant results instead of relying on snippets.
 
 Use a bounded research pass by default: try no more than three focused query variations and deeply review two to five of the best primary results. Stop earlier when two credible, independent sources establish the solution space and main risks, or when additional results only repeat known information. If missing project context would change the candidates, ask one material question instead of widening the search. For each useful analogue, record:
 
@@ -179,11 +211,23 @@ Use relevant engineering skills available in the host agent after approval and a
 
 Treat these names as capability labels rather than mandatory dependencies. Do not install Superpowers or any other skill pack without permission. Invoke only skills actually available in the current session and never claim to have invoked a missing skill. If one is unavailable, disclose that fact and apply its core discipline directly when safe, or ask before installing or materially changing the workflow.
 
+## User Overrides
+
+Honor explicit user intent, but keep the safety boundary visible:
+
+- If the user says to skip discovery, skip research, or “just implement,” restate the current classification and product verdict in one short paragraph, name the main risk of skipping, and ask for a clear override such as **implement anyway**. Do not silently abandon the skill.
+- A medium or major override still requires an explicit implementation go-ahead before editing project files. “Continue” at the model checkpoint is not plan approval.
+- If the user insists on the original larger scope after a **reduce scope** verdict, keep that insistence as an explicit assumption and raise the classification or model tier when the larger scope warrants it.
+- If the user replies **continue anyway** after **decline** or **defer**, open the model checkpoint next, then proceed with discovery while keeping the negative product recommendation visible until new evidence changes it.
+
+See [references/edge-cases.md](references/edge-cases.md) for common override and reclassification patterns.
+
 ## Token Efficiency
 
 Reduce total tokens and rework without weakening correctness:
 
 - bypass the full workflow for genuinely small changes;
+- stop on preliminary **decline** or **defer** before research and planning;
 - inspect and research only what can affect the decision;
 - use at most three focused GitHub queries and deeply review no more than five results by default; stop when additional evidence has low decision value;
 - ask only material questions and stop when requirements are decision-complete;
@@ -201,11 +245,12 @@ Reveal sections progressively rather than emitting empty templates:
 
 1. **Classification** — small, medium, or major; reasons, consequences, confidence.
 2. **Preliminary Product Assessment** — necessity, likely user and product value, evidence gaps, risks, smallest alternative, improvement direction, and a preliminary proceed/reduce/defer/decline verdict.
-3. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition.
-4. **Model Checkpoint** — continue without pausing for a small change; for medium or major work, distinguish the model advice from the preliminary product verdict, give the exact action, and stop until the user replies **continue**.
-5. **Question** — the single next material unknown, if any.
-6. **GitHub Findings** — evidence and lessons before solution comparison.
-7. **Requirements Brief** — confirmed what and why.
-8. **Options** — approaches, trade-offs, and recommendation.
-9. **Plan** — decision-complete implementation sequence.
-10. **Approval** — explicit permission before medium or major code changes.
+3. **Product Decision Gate** — stop on decline or defer; otherwise continue with the assessed or reduced scope.
+4. **Model Tier** — advisory low, medium, or high; reason, trade-off, escalation condition. Skip after decline or defer unless the user continues anyway.
+5. **Model Checkpoint** — continue without pausing for a small change; for medium or major proceed/reduce-scope work, distinguish the model advice from the preliminary product verdict, give the exact action, and stop until the user replies **continue**.
+6. **Question** — the single next material unknown, if any.
+7. **GitHub Findings** — evidence and lessons before solution comparison.
+8. **Requirements Brief** — confirmed what and why.
+9. **Options** — approaches, trade-offs, and recommendation.
+10. **Plan** — decision-complete implementation sequence.
+11. **Approval** — explicit permission before medium or major code changes.

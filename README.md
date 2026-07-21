@@ -25,9 +25,9 @@ It then recommends **proceed**, **reduce scope**, **defer**, or **decline**.
 
 1. Classify the change as small, medium, or major based on risk and blast radius—not line count alone.
 2. Give a preliminary verdict on necessity and expected product value, identify missing evidence, and suggest at least one smaller or better direction.
-3. Recommend an advisory low, medium, or high model/reasoning tier without switching models automatically. Small changes continue by default; medium and major changes pause until the user confirms the current selection or adjusts it.
-4. Create a privacy-safe search brief.
-5. For medium and major changes, research similar GitHub work before comparing solutions.
+3. Stop at a product decision gate when the verdict is **decline** or **defer**. For **proceed** or **reduce scope**, recommend an advisory low, medium, or high model/reasoning tier without switching models automatically. Small changes continue by default; medium and major proceed/reduce-scope work pauses until the user confirms the current selection or adjusts it.
+4. Create a privacy-safe search brief for the working scope, including a reduced direction when that was recommended.
+5. For medium and major changes that cleared the gates, research similar GitHub work before comparing solutions.
 6. Ask one material question at a time so non-technical users can make informed decisions.
 7. Produce a requirements brief that separates **what and why** from **how**.
 8. Compare two or three viable approaches, including the smallest useful option.
@@ -84,15 +84,17 @@ Use change-discovery to evaluate this request before changing code:
 Add a community feature to my application.
 ```
 
-Expected behavior begins with classification, a preliminary product-value verdict, an improvement direction, and model-tier advice—not implementation. Small changes state that they will continue with the current selection. Medium and major changes stop at a model checkpoint before GitHub research and deeper discovery continue.
+Expected behavior begins with classification, a preliminary product-value verdict, and an improvement direction—not implementation. If the verdict is decline or defer, the agent stops before model selection and research. If the verdict is proceed or reduce scope, it gives model-tier advice next. Small changes state that they will continue with the current selection. Medium and major proceed/reduce-scope work stops at a model checkpoint before GitHub research and deeper discovery continue.
 
-At that checkpoint, the agent must distinguish the preliminary product verdict from the model advice, say that deeper validation has not started, and give one clear action: reply `continue` to keep the current model, or switch first and then reply `continue`.
+At that checkpoint, the agent must distinguish the preliminary product verdict from the model advice, say that deeper validation has not started, and give one clear action: reply `continue` to keep the current model, or switch first and then reply `continue`. After decline or defer, the clear action is `continue anyway` only if the user still wants discovery.
 
 ## Safety and limitations
 
 - Model-tier recommendations are advisory; the skill never switches models or reasoning settings by itself.
 - The model checkpoint adds no extra confirmation round for small changes unless the user requests one.
+- Decline and defer stop before model selection and GitHub research unless the user explicitly continues anyway.
 - A model-tier recommendation must be clearly separated from the preliminary recommendation to proceed, reduce scope, defer, or decline.
+- “Continue” at the model checkpoint is not approval to edit project files.
 - GitHub research requires the host to have public web or GitHub access.
 - The approval gate is an instruction-level guardrail, not an operating-system permission boundary.
 - Superpowers is optional. The agent must use equivalent engineering discipline when those skills are unavailable.
